@@ -1,55 +1,51 @@
 # CHURN-STREAMING-HACKATHON
 
-Projeto do hackathon para prever **evasão de clientes (churn)** em um serviço de streaming, usando **Regressão Logística** e **Random Forest** dentro de um pipeline completo de machine learning.
+Projeto de hackathon para prever **evasão de clientes (churn)** em um serviço de streaming, usando Regressão Logística e Random Forest dentro de um pipeline completo de machine learning.
 
----
+***
 
 ## OBJETIVO DO PROJETO
 
-- Identificar clientes com maior probabilidade de cancelar a assinatura.  
-- Ajudar o time de negócio com insights de quais variáveis mais influenciam o churn.  
-- Entregar um **modelo treinado e salvo** que possa ser consumido por uma API do back-end do hackathon.
+- Identificar clientes com maior probabilidade de cancelar a assinatura, gerando um score de risco de churn para cada usuário.
+- Apoiar o time de negócio com insights sobre quais variáveis numéricas (ex.: valor por hora, engajamento, satisfação) mais influenciam o churn.
+- Entregar um **modelo treinado e salvo** em pipeline (`scikit-learn`) pronto para ser consumido por uma API do back-end do hackathon.
 
----
+***
 
-## DADOS E FEATURES
+## DADOS E RECURSOS
 
-- Dataset de clientes de um serviço de streaming, contendo:
-  - Tempo de assinatura em meses.  
-  - Valor mensal pago e tipo de plano.  
-  - Comportamento de uso (visualizações no mês, tempo médio de sessão).  
-  - Avaliações de conteúdo e da plataforma.  
-  - Número de contatos com o suporte.  
-  - Método de pagamento, dispositivo principal, formato mais assistido.  
-  - Satisfação média, nível de engajamento e rótulo de churn (0 = continua, 1 = churn).
+- Base principal: `dados_streaming.csv`, contendo informações de uso da plataforma, perfil do cliente e status de churn.
+- Ambiente: Google Colab, com notebooks organizados em etapas (EDA, preparação, modelagem e recomendações de negócio).
+- Principais bibliotecas: `pandas`, `numpy`, `scikit-learn`, `matplotlib`, `seaborn`.
 
-- Durante a limpeza:
-  - Removemos a coluna `client_id` (não entra na modelagem).  
-  - Passamos a usar apenas o **índice do DataFrame** como identificador interno de cada cliente.
- 
-- Criamos algumas features de negócio:
-  - `valor_por_hora`: relação entre valor mensal e tempo total assistido (proxy de custo-benefício).  
-  - `alto_atrito`: indicador binário para clientes com muitos contatos de suporte.  
-  - `satisfacao_media`: média de diferentes notas de avaliação (conteúdo/plataforma).
+***
 
-- Conjunto final de features usadas pelo modelo (`features_core_ext`):
+## ETAPAS REALIZADAS
 
-```python
-features_core_ext = [
-    'tempo_assinatura_meses',
-    'valor_mensal',
-    'plano_assinatura',
-    'visualizacoes_mes',
-    'tempo_medio_sessao_min',
-    'avaliacao_conteudo',
-    'media_avaliacao_plataforma',
-    'contatos_suporte',
-    'metodo_pagamento',
-    'formato_mais_assistido',
-    'dispositivo_principal',
-    'faixa_tempo_assinatura',
-    'valor_por_hora',
-    'engajamento_nivel',
-    'satisfacao_media',
-    'alto_atrito'
-]
+- **Exploração e limpeza de dados (EDA)**  
+  - Tratamento de valores ausentes, correção de tipos e remoção de outliers críticos.  
+  - Análises gráficas para entender distribuição de variáveis, proporção de churn e comportamento por segmento.
+
+- **Engenharia de atributos**  
+  - Criação de variáveis como `valor_por_hora`, indicadores de engajamento e métricas agregadas de uso e satisfação.  
+  - Seleção de variáveis relevantes com base em correlação entre variáveis numéricas e comportamento de churn.
+
+- **Modelagem e avaliação**  
+  - Construção de um pipeline com pré-processamento e modelos de Regressão Logística e RandomForestClassifier com `class_weight='balanced'`.
+  - Avaliação por AUC-ROC, matriz de confusão e análise de importância de features para interpretação dos resultados.
+
+- **Geração de insights e recomendações**  
+  - Identificação de perfis de maior risco (alto custo por hora, baixo engajamento, baixa satisfação).  
+  - Definição de ações de retenção sugeridas para o time de negócio, como descontos segmentados e campanhas de reengajamento.
+
+***
+
+## COMO REPRODUZIR
+
+- Clonar o repositório e instalar as dependências listadas em `requirements.txt` em um ambiente Python 3.8+.  
+- Executar os notebooks na ordem sugerida na pasta `notebooks/` ou rodar o pipeline treinado carregando o arquivo de modelo salvo na pasta `models/`.
+
+ ---
+
+> 🧠 Projeto desenvolvido por **André** durante o **CHURN-STREAMING-HACKATHON**, atuando na trilha de **Data Science** com foco em previsão de churn e geração de insights acionáveis para o negócio.
+
